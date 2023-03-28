@@ -1,0 +1,35 @@
+{
+  "name": "coingecko-node-sdk",
+  "version": "1.0.4",
+  "description": "Simple SDK for CoinGecko's API",
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format cjs,esm"
+  },
+  "typings": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "keywords": [],
+  "author": "Thalles Passos",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/thallesp/coingecko-node-sdk"
+  },
+  "devDependencies": {
+    "node-fetch": "^3.3.1",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@types/node-fetch": "^2.6.2",
+    "bignumber.js": "^9.1.1"
+  }
+}
