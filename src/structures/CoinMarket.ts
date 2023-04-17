@@ -33,7 +33,7 @@ export type CoinMarketProps = {
   ath_change_percentage: number;
   ath_date: Date | null;
   atl: number | null;
-  atl_change_percentage: BigNumber;
+  atl_change_percentage: BigNumber | null;
   atl_date: Date | null;
   roi: Roi | null;
   last_updated: Date | null;
@@ -79,7 +79,7 @@ export class CoinMarket {
   ath_change_percentage: number;
   ath_date: Date | null;
   atl: number | null;
-  atl_change_percentage: BigNumber;
+  atl_change_percentage: BigNumber | null;
   atl_date: Date | null;
   roi: Roi | null;
   last_updated: Date | null;

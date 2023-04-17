@@ -47,6 +47,8 @@ export class Ticker {
   converted_volume?: {
     [key: string]: number;
   };
+  cost_to_move_up_usd?: number;
+  cost_to_move_down_usd?: number;
   trust_score?: string;
   bid_ask_spread_percentage?: number;
   timestamp?: Date;

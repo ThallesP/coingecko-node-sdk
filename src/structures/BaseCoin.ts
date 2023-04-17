@@ -2,6 +2,9 @@ export type BaseCoinProps = {
   id: string;
   symbol: string;
   name: string;
+  platforms?: {
+    [key: string]: string;
+  };
 };
 
 export class BaseCoin {
@@ -12,4 +15,7 @@ export class BaseCoin {
   id: string;
   symbol: string;
   name: string;
+  platforms?: {
+    [key: string]: string;
+  };
 }

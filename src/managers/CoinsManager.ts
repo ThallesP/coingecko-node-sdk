@@ -10,6 +10,12 @@ export type CoinsManagerProps = {
 };
 export type Periods = "1h" | "24h" | "7d" | "14d" | "30d" | "200d" | "1y";
 
+export type ListCoinsProps = {
+  include?: {
+    platform?: boolean;
+  };
+};
+
 export type ListMarketsProps = {
   vs_currency: string;
 
@@ -36,8 +42,16 @@ export class CoinsManager {
     this.#request = requestManager;
   }
 
-  async list(): Promise<BaseCoin[]> {
-    const response = await this.#request.get("/coins/list");
+  async list(props?: ListCoinsProps): Promise<BaseCoin[]> {
+    const params = new URLSearchParams();
+    if (props && props.include) {
+      const { platform } = props.include;
+
+      if (platform)
+        params.append("include_platform", String(props.include.platform));
+    }
+
+    const response = await this.#request.get("/coins/list?" + params);
 
     const data = (await response.json()) as BaseCoin[];
 
@@ -77,7 +91,10 @@ export class CoinsManager {
     return data.map(CoinMarketMapper.toCoinMarket);
   }
 
-  async tickers({ coin_id, include }: GetTickersProps): Promise<Ticker[]> {
+  async tickers({
+    coin_id,
+    include,
+  }: GetTickersProps): Promise<Ticker[] | null> {
     const params = new URLSearchParams();
 
     if (include) {
@@ -92,10 +109,10 @@ export class CoinsManager {
       `/coins/${coin_id}/tickers?` + params
     );
 
-    if (!response) throw new CoinNotFoundError(coin_id);
+    if (response.status === 404) return null;
 
-    const data = (await response.json()) as Ticker[];
+    const data = (await response.json()) as { name: string; tickers: Ticker[] };
 
-    return data;
+    return data.tickers;
   }
 }
