@@ -3,7 +3,7 @@ export type BaseCoinProps = {
   symbol: string;
   name: string;
   platforms?: {
-    [key: string]: string;
+    [key: string]: string | null;
   };
 };
 
@@ -16,6 +16,6 @@ export class BaseCoin {
   symbol: string;
   name: string;
   platforms?: {
-    [key: string]: string;
+    [key: string]: string | null;
   };
 }

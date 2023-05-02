@@ -4,7 +4,8 @@
   "description": "Simple SDK for CoinGecko's API",
   "type": "module",
   "scripts": {
-    "build": "tsup src/index.ts --dts --format cjs,esm"
+    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "test": "vitest"
   },
   "typings": "./dist/index.d.ts",
   "exports": {
@@ -24,12 +25,17 @@
     "url": "https://github.com/thallesp/coingecko-node-sdk"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nock": "^13.3.1",
     "node-fetch": "^3.3.1",
     "tsup": "^6.7.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vitest": "^0.30.1"
   },
   "dependencies": {
+    "@t3-oss/env-core": "^0.2.2",
     "@types/node-fetch": "^2.6.2",
-    "bignumber.js": "^9.1.1"
+    "bignumber.js": "^9.1.1",
+    "zod": "^3.21.4"
   }
 }

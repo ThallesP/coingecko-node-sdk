@@ -1,9 +1,11 @@
 import { CoinNotFoundError } from "../errors/CoinNotFoundError.js";
+import { InvalidResponseFromCoingeckoError } from "../errors/InvalidResponseFromCoingeckoError.js";
 import { CoinMarket } from "../structures/CoinMarket.js";
 import { Ticker } from "../structures/Ticker.js";
 import { BaseCoin } from "./../structures/BaseCoin.js";
 import { GeckoRequestManager } from "./GeckoRequestManager.js";
 import { CoinMarketMapper } from "./mappers/CoinMarketMapper.js";
+import z from "zod";
 
 export type CoinsManagerProps = {
   requestManager: GeckoRequestManager;
@@ -53,7 +55,26 @@ export class CoinsManager {
 
     const response = await this.#request.get("/coins/list?" + params);
 
-    const data = (await response.json()) as BaseCoin[];
+    const jsonData = await response.json().catch((err) => {
+      throw new InvalidResponseFromCoingeckoError(
+        `Response body is not a valid JSON. Received err: ${err}`
+      );
+    });
+
+    const coinsSchema = z.array(
+      z.object({
+        id: z.string(),
+        symbol: z.string(),
+        name: z.string(),
+        platforms: z.record(z.string().nullable()).optional(),
+      })
+    );
+
+    const data = await coinsSchema.parseAsync(jsonData).catch((err) => {
+      throw new InvalidResponseFromCoingeckoError(
+        `Response body is not a valid coins schema. Schema parse error: ${err}`
+      );
+    });
 
     return data.map((coin) => new BaseCoin(coin));
   }
