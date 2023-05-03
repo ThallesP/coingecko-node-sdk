@@ -1,11 +1,16 @@
 import { CoinNotFoundError } from "../errors/CoinNotFoundError.js";
-import { InvalidResponseFromCoingeckoError } from "../errors/InvalidResponseFromCoingeckoError.js";
+import { HttpError } from "../errors/HttpError.js";
 import { CoinMarket } from "../structures/CoinMarket.js";
 import { Ticker } from "../structures/Ticker.js";
+import { parseSchemaFromResponse } from "../utils/schemaparser.js";
 import { BaseCoin } from "./../structures/BaseCoin.js";
 import { GeckoRequestManager } from "./GeckoRequestManager.js";
 import { CoinMarketMapper } from "./mappers/CoinMarketMapper.js";
-import z from "zod";
+import {
+  coinMarketsSchema,
+  coinsSchema,
+  tickersSchema,
+} from "./validators/CoinsManager.validator.js";
 
 export type CoinsManagerProps = {
   requestManager: GeckoRequestManager;
@@ -55,26 +60,13 @@ export class CoinsManager {
 
     const response = await this.#request.get("/coins/list?" + params);
 
-    const jsonData = await response.json().catch((err) => {
-      throw new InvalidResponseFromCoingeckoError(
-        `Response body is not a valid JSON. Received err: ${err}`
-      );
-    });
+    if (!response.ok)
+      throw new HttpError(response.status, await response.text());
 
-    const coinsSchema = z.array(
-      z.object({
-        id: z.string(),
-        symbol: z.string(),
-        name: z.string(),
-        platforms: z.record(z.string().nullable()).optional(),
-      })
+    const data = await parseSchemaFromResponse<typeof coinsSchema._type>(
+      coinsSchema,
+      response
     );
-
-    const data = await coinsSchema.parseAsync(jsonData).catch((err) => {
-      throw new InvalidResponseFromCoingeckoError(
-        `Response body is not a valid coins schema. Schema parse error: ${err}`
-      );
-    });
 
     return data.map((coin) => new BaseCoin(coin));
   }
@@ -105,9 +97,15 @@ export class CoinsManager {
 
     const response = await this.#request.get("/coins/markets?" + params);
 
-    if (!response) throw new CoinNotFoundError(vs_currency);
+    if (response.status == 404) throw new CoinNotFoundError(vs_currency);
 
-    const data = (await response.json()) as CoinMarket[];
+    if (!response.ok)
+      throw new HttpError(response.status, await response.text());
+
+    const data = await parseSchemaFromResponse<typeof coinMarketsSchema._type>(
+      coinMarketsSchema,
+      response
+    );
 
     return data.map(CoinMarketMapper.toCoinMarket);
   }
@@ -132,7 +130,13 @@ export class CoinsManager {
 
     if (response.status === 404) return null;
 
-    const data = (await response.json()) as { name: string; tickers: Ticker[] };
+    if (!response.ok)
+      throw new HttpError(response.status, await response.text());
+
+    const data = await parseSchemaFromResponse<typeof tickersSchema._type>(
+      tickersSchema,
+      response
+    );
 
     return data.tickers;
   }

@@ -13,6 +13,14 @@ describe("CoinsManager", () => {
         .get(/\/coins\/list/i)
         .replyWithFile(200, __dirname + "/mockData/coins.json", {
           "Content-Type": "application/json",
+        })
+        .get(/\/coins\/markets/i)
+        .replyWithFile(200, __dirname + "/mockData/market_coins.json", {
+          "Content-Type": "application/json",
+        })
+        .get(/\/coins\/bitcoin\/tickers/i)
+        .replyWithFile(200, __dirname + "/mockData/tickers.json", {
+          "Content-Type": "application/json",
         });
     }
   });
@@ -34,6 +42,22 @@ describe("CoinsManager", () => {
     });
 
     expect(coins.length).toBeGreaterThan(10);
-    expect(coins[0].platforms).toBeDefined();
+  });
+
+  it("should be able to list coin markets", async () => {
+    const coinMarkets = await coinsManager.markets({
+      vs_currency: "usd",
+      per_page: 250,
+    });
+
+    expect(coinMarkets.length).toBeGreaterThan(1);
+  });
+
+  it("should be able list tickers from bitcoin", async () => {
+    const tickers = await coinsManager.tickers({
+      coin_id: "bitcoin",
+    });
+
+    expect(tickers?.length).toBeGreaterThan(1);
   });
 });

@@ -83,7 +83,7 @@ export class CoinMarket {
   atl_date: Date | null;
   roi: Roi | null;
   last_updated: Date | null;
-  sparkline_in_7d: SparklineIn7d;
+  sparkline_in_7d: SparklineIn7d | null;
   price_change_percentage_24h_in_currency: number | null;
   price_change_percentage_30d_in_currency: number | null;
   price_change_percentage_7d_in_currency: number | null;

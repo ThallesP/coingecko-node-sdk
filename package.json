@@ -25,6 +25,7 @@
     "url": "https://github.com/thallesp/coingecko-node-sdk"
   },
   "devDependencies": {
+    "@types/json-bigint": "^1.0.1",
     "dotenv": "^16.0.3",
     "nock": "^13.3.1",
     "node-fetch": "^3.3.1",
@@ -36,6 +37,7 @@
     "@t3-oss/env-core": "^0.2.2",
     "@types/node-fetch": "^2.6.2",
     "bignumber.js": "^9.1.1",
+    "lossless-json": "^2.0.8",
     "zod": "^3.21.4"
   }
 }

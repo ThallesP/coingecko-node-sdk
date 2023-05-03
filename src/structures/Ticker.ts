@@ -1,34 +1,34 @@
 export interface Market {
-  name?: string;
-  identifier?: string;
-  has_trading_incentive?: boolean;
+  name: string | null;
+  identifier: string | null;
+  has_trading_incentive: boolean | null;
 }
 
 export type TickerProps = {
-  base?: string;
-  target?: string;
-  market?: Market;
-  last?: number;
-  volume?: number;
-  converted_last?: {
+  base: string | null;
+  target: string | null;
+  market: Market | null;
+  last: number | null;
+  volume: number | null;
+  converted_last: {
     [key: string]: number;
-  };
-  converted_volume?: {
+  } | null;
+  converted_volume: {
     [key: string]: number;
-  };
-  cost_to_move_up_usd?: number;
-  cost_to_move_down_usd?: number;
-  trust_score?: string;
-  bid_ask_spread_percentage?: number;
-  timestamp?: Date;
-  last_traded_at?: Date;
-  last_fetch_at?: Date;
-  is_anomaly?: boolean;
-  is_stale?: boolean;
-  trade_url?: string;
-  token_info_url?: null;
-  coin_id?: string;
-  target_coin_id?: string;
+  } | null;
+  cost_to_move_up_usd: number | null;
+  cost_to_move_down_usd: number | null;
+  trust_score: string | null;
+  bid_ask_spread_percentage: number | null;
+  timestamp: Date | null;
+  last_traded_at: Date | null;
+  last_fetch_at: Date | null;
+  is_anomaly: boolean | null;
+  is_stale: boolean | null;
+  trade_url: string | null;
+  token_info_url: string | null;
+  coin_id: string | null;
+  target_coin_id: string | null;
 };
 
 export class Ticker {
@@ -36,28 +36,28 @@ export class Ticker {
     Object.assign(this, props);
   }
 
-  base?: string;
-  target?: string;
-  market?: Market;
-  last?: number;
-  volume?: number;
-  converted_last?: {
-    [key: string]: number;
-  };
-  converted_volume?: {
-    [key: string]: number;
-  };
-  cost_to_move_up_usd?: number;
-  cost_to_move_down_usd?: number;
-  trust_score?: string;
-  bid_ask_spread_percentage?: number;
-  timestamp?: Date;
-  last_traded_at?: Date;
-  last_fetch_at?: Date;
-  is_anomaly?: boolean;
-  is_stale?: boolean;
-  trade_url?: string;
-  token_info_url?: null;
-  coin_id?: string;
-  target_coin_id?: string;
+  base: string | null;
+  target: string | null;
+  market: Market | null;
+  last: number | null;
+  volume: number | null;
+  converted_last: {
+    [key: string]: number | null;
+  } | null;
+  converted_volume: {
+    [key: string]: number | null;
+  } | null;
+  cost_to_move_up_usd: number | null;
+  cost_to_move_down_usd: number | null;
+  trust_score: string | null;
+  bid_ask_spread_percentage: number | null;
+  timestamp: Date | null;
+  last_traded_at: Date | null;
+  last_fetch_at: Date | null;
+  is_anomaly: boolean | null;
+  is_stale: boolean | null;
+  trade_url: string | null;
+  token_info_url: string | null;
+  coin_id: string | null;
+  target_coin_id: string | null;
 }
