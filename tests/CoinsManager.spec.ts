@@ -6,10 +6,11 @@ import { env } from "./env.js";
 
 let requestManager: GeckoRequestManager;
 let coinsManager: CoinsManager;
+const coinsId = ["bitcoin", "ethereum", "dogecoin"];
 describe("CoinsManager", () => {
   beforeAll(async () => {
     if (env.MOCK_API_CALLS) {
-      nock("https://api.coingecko.com/api/v3")
+      const scope = nock("https://api.coingecko.com/api/v3")
         .get(/\/coins\/list/i)
         .replyWithFile(200, __dirname + "/mockData/coins.json", {
           "Content-Type": "application/json",
@@ -21,7 +22,17 @@ describe("CoinsManager", () => {
         .get(/\/coins\/bitcoin\/tickers/i)
         .replyWithFile(200, __dirname + "/mockData/tickers.json", {
           "Content-Type": "application/json",
-        });
+        })
+        .get(/\/coins\/bitcoin\/market_chart/i)
+        .replyWithFile(200, __dirname + "/mockData/chart_bitcoin.json");
+
+      for (const coinId of coinsId) {
+        scope
+          .get(new RegExp("/coins/COIN_HERE".replace("COIN_HERE", coinId), "i"))
+          .replyWithFile(200, __dirname + `/mockData/coin_${coinId}.json`, {
+            "Content-Type": "application/json",
+          });
+      }
     }
   });
 
@@ -59,5 +70,25 @@ describe("CoinsManager", () => {
     });
 
     expect(tickers?.length).toBeGreaterThan(1);
+  });
+
+  it("should be able to fetch specific coin by id", async () => {
+    for (const coinId of coinsId) {
+      const coin = await coinsManager.coin({
+        coin_id: coinId,
+      });
+
+      expect(coin?.id).toBe(coinId);
+    }
+  });
+
+  it("should be able to fetch market chart data", async () => {
+    const marketChartData = await coinsManager.marketChart({
+      coin_id: "bitcoin",
+      vs_currency: "usd",
+      days: 1,
+    });
+
+    expect(marketChartData.length).toBeGreaterThan(1);
   });
 });

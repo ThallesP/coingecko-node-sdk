@@ -1,14 +1,17 @@
 import { CoinNotFoundError } from "../errors/CoinNotFoundError.js";
 import { HttpError } from "../errors/HttpError.js";
+import { Coin } from "../structures/Coin.js";
 import { CoinMarket } from "../structures/CoinMarket.js";
 import { Ticker } from "../structures/Ticker.js";
 import { parseSchemaFromResponse } from "../utils/schemaparser.js";
 import { BaseCoin } from "./../structures/BaseCoin.js";
 import { GeckoRequestManager } from "./GeckoRequestManager.js";
 import { CoinMarketMapper } from "./mappers/CoinMarketMapper.js";
+import { MarketChartMapper } from "./mappers/MarketChartMapper.js";
 import {
   coinMarketsSchema,
   coinsSchema,
+  marketChartSchema,
   tickersSchema,
 } from "./validators/CoinsManager.validator.js";
 
@@ -42,11 +45,64 @@ export type GetTickersProps = {
   };
 };
 
+export type GetCoinByIDProps = {
+  coin_id: string;
+  include?: {
+    sparkline?: boolean;
+    tickers?: boolean;
+    market_data?: boolean;
+    community_data?: boolean;
+    developer_data?: boolean;
+    localization?: boolean;
+  };
+};
+
+export type GetCoinMarketChartProps = {
+  coin_id: string;
+  vs_currency: string;
+  days: number;
+  interval?: string;
+};
+
 export class CoinsManager {
   #request: GeckoRequestManager;
 
   constructor({ requestManager }: CoinsManagerProps) {
     this.#request = requestManager;
+  }
+
+  async coin(props: GetCoinByIDProps): Promise<Coin> {
+    const params = new URLSearchParams();
+
+    if (props.include) {
+      const {
+        sparkline,
+        community_data,
+        developer_data,
+        localization,
+        market_data,
+        tickers,
+      } = props.include;
+      if (sparkline) params.append("sparkline", String(sparkline));
+      if (community_data)
+        params.append("community_data", String(community_data));
+      if (developer_data)
+        params.append("developer_data", String(developer_data));
+      if (localization) params.append("localization", String(localization));
+      if (market_data) params.append("market_data", String(market_data));
+      if (tickers) params.append("tickers", String(tickers));
+    }
+
+    const response = await this.#request.get(
+      `/coins/${props.coin_id}?` + params
+    );
+
+    if (response.status === 404) throw new CoinNotFoundError(props.coin_id);
+
+    if (!response.ok)
+      throw new HttpError(response.status, await response.text());
+
+    return (await response.json()) as Coin;
   }
 
   async list(props?: ListCoinsProps): Promise<BaseCoin[]> {
@@ -139,5 +195,35 @@ export class CoinsManager {
     );
 
     return data.tickers;
+  }
+
+  async marketChart({
+    coin_id,
+    days,
+    vs_currency,
+    interval,
+  }: GetCoinMarketChartProps) {
+    const params = new URLSearchParams();
+
+    params.append("coin_id", coin_id);
+    params.append("vs_currency", vs_currency);
+    params.append("days", String(days));
+    if (interval) params.append("interval", interval);
+
+    const response = await this.#request.get(
+      `/coins/${coin_id}/market_chart?` + params
+    );
+
+    if (response.status === 404) throw new CoinNotFoundError(coin_id);
+
+    if (!response.ok)
+      throw new HttpError(response.status, await response.text());
+
+    const data = await parseSchemaFromResponse<typeof marketChartSchema._type>(
+      marketChartSchema,
+      response
+    );
+
+    return MarketChartMapper.toMarketChart(data);
   }
 }

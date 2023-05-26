@@ -215,3 +215,7 @@ export const tickersSchema = z.object({
     })
   ),
 });
+
+export const marketChartSchema = z.object({
+  prices: z.array(z.array(z.number(), z.number())),
+});
