@@ -218,4 +218,6 @@ export const tickersSchema = z.object({
 
 export const marketChartSchema = z.object({
   prices: z.array(z.array(z.number(), z.number())),
+  market_caps: z.array(z.array(z.number(), z.number())),
+  total_volumes: z.array(z.array(z.number(), z.number())),
 });

@@ -89,6 +89,8 @@ describe("CoinsManager", () => {
       days: 1,
     });
 
-    expect(marketChartData.length).toBeGreaterThan(1);
+    expect(marketChartData.marketCapSnapshots.length).toBeGreaterThan(1);
+    expect(marketChartData.priceSnapshots.length).toBeGreaterThan(1);
+    expect(marketChartData.volumeSnapshots.length).toBeGreaterThan(1);
   });
 });

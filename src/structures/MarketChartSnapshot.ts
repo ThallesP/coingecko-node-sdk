@@ -1,14 +1,20 @@
-export type MarketChartSnapshotProps = {
-  price: number;
+export interface MarketChartSnapshot {
+  value: number;
   date: Date;
+}
+
+export type MarketChartSnapshotProps = {
+  volumeSnapshots: MarketChartSnapshot[];
+  priceSnapshots: MarketChartSnapshot[];
+  marketCapSnapshots: MarketChartSnapshot[];
 };
 
-export class MarketChartSnapshot {
+export class MarketChartSnapshots {
   constructor(props: MarketChartSnapshotProps) {
-    this.price = props.price;
-    this.date = props.date;
+    Object.assign(this, props);
   }
 
-  price: number;
-  date: Date;
+  volumeSnapshots: MarketChartSnapshot[];
+  priceSnapshots: MarketChartSnapshot[];
+  marketCapSnapshots: MarketChartSnapshot[];
 }
