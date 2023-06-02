@@ -1,5 +1,5 @@
 export interface MarketChartSnapshot {
-  value: number;
+  value: number | null;
   date: Date;
 }
 
