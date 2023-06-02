@@ -60,7 +60,7 @@ export type GetCoinByIDProps = {
 export type GetCoinMarketChartProps = {
   coin_id: string;
   vs_currency: string;
-  days: number;
+  days: string | number;
   interval?: string;
 };
 
