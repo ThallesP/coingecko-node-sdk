@@ -17,7 +17,9 @@ export class MarketChartMapper {
     });
   }
 
-  static #snapshotMapper = (snapshot: number[]): MarketChartSnapshot => {
+  static #snapshotMapper = (
+    snapshot: [number, number | null]
+  ): MarketChartSnapshot => {
     return {
       date: new Date(snapshot[0]),
       value: snapshot[1],
