@@ -1,6 +1,7 @@
 import { RequestInit } from "node-fetch";
 import { CoinsManager } from "../managers/CoinsManager.js";
 import { GeckoRequestManager } from "../managers/GeckoRequestManager.js";
+import { ContractsManager } from "../managers/ContractsManager.js";
 
 type GeckoClientProps = {
   /* Maybe useful for Pro users*/
@@ -34,7 +35,11 @@ export class GeckoClient {
     });
 
     this.coins = new CoinsManager({ requestManager: this.#requestManager });
+    this.contracts = new ContractsManager({
+      requestManager: this.#requestManager,
+    });
   }
 
   coins: CoinsManager;
+  contracts: ContractsManager;
 }
