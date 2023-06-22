@@ -71,7 +71,7 @@ export class CoinsManager {
     this.#request = requestManager;
   }
 
-  async coin(props: GetCoinByIDProps): Promise<Coin> {
+  async coin(props: GetCoinByIDProps): Promise<Coin | null> {
     const params = new URLSearchParams();
 
     if (props.include) {
@@ -97,7 +97,7 @@ export class CoinsManager {
       `/coins/${props.coin_id}?` + params
     );
 
-    if (response.status === 404) throw new CoinNotFoundError(props.coin_id);
+    if (response.status === 404) return null;
 
     if (!response.ok)
       throw new HttpError(response.status, await response.text());
