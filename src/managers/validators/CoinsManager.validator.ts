@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { BigNumber } from "bignumber.js";
 
 export const coinsSchema = z.array(
   z.object({
@@ -10,53 +9,51 @@ export const coinsSchema = z.array(
   })
 );
 
-const losslessNumber = z.instanceof(BigNumber);
-
 export const coinMarketSchema = z.object({
   id: z.string(),
   symbol: z.string(),
   name: z.string(),
   image: z.string(),
-  current_price: losslessNumber.nullable(),
-  market_cap: losslessNumber.nullable(),
-  market_cap_rank: losslessNumber.nullable(),
-  fully_diluted_valuation: losslessNumber.nullable(),
-  total_volume: losslessNumber.nullable(),
-  high_24h: losslessNumber.nullable(),
-  low_24h: losslessNumber.nullable(),
-  price_change_24h: losslessNumber.nullable(),
-  price_change_percentage_24h: losslessNumber.nullable(),
-  market_cap_change_24h: losslessNumber.nullable(),
-  market_cap_change_percentage_24h: losslessNumber.nullable(),
-  circulating_supply: losslessNumber.nullable(),
-  total_supply: losslessNumber.nullable(),
-  max_supply: losslessNumber.nullable(),
-  ath: losslessNumber.nullable(),
-  ath_change_percentage: losslessNumber.nullable(),
+  current_price: z.string().nullable(),
+  market_cap: z.string().nullable(),
+  market_cap_rank: z.string().nullable(),
+  fully_diluted_valuation: z.string().nullable(),
+  total_volume: z.string().nullable(),
+  high_24h: z.string().nullable(),
+  low_24h: z.string().nullable(),
+  price_change_24h: z.string().nullable(),
+  price_change_percentage_24h: z.string().nullable(),
+  market_cap_change_24h: z.string().nullable(),
+  market_cap_change_percentage_24h: z.string().nullable(),
+  circulating_supply: z.string().nullable(),
+  total_supply: z.string().nullable(),
+  max_supply: z.string().nullable(),
+  ath: z.string().nullable(),
+  ath_change_percentage: z.string().nullable(),
   ath_date: z.coerce.date().nullable(),
-  atl: losslessNumber.nullable(),
-  atl_change_percentage: losslessNumber.nullable(),
+  atl: z.string().nullable(),
+  atl_change_percentage: z.string().nullable(),
   atl_date: z.coerce.date().nullable(),
   roi: z
     .object({
-      times: losslessNumber.nullable(),
+      times: z.string().nullable(),
       currency: z.string().nullable(),
-      percentage: losslessNumber.nullable(),
+      percentage: z.string().nullable(),
     })
     .nullable(),
   last_updated: z.coerce.date().nullable(),
   sparkline_in_7d: z
     .object({
-      price: z.array(losslessNumber),
+      price: z.array(z.string()),
     })
     .nullish(),
-  price_change_percentage_14d_in_currency: losslessNumber.nullish(),
-  price_change_percentage_1h_in_currency: losslessNumber.nullish(),
-  price_change_percentage_1y_in_currency: losslessNumber.nullish(),
-  price_change_percentage_200d_in_currency: losslessNumber.nullish(),
-  price_change_percentage_24h_in_currency: losslessNumber.nullish(),
-  price_change_percentage_30d_in_currency: losslessNumber.nullish(),
-  price_change_percentage_7d_in_currency: losslessNumber.nullish(),
+  price_change_percentage_14d_in_currency: z.string().nullish(),
+  price_change_percentage_1h_in_currency: z.string().nullish(),
+  price_change_percentage_1y_in_currency: z.string().nullish(),
+  price_change_percentage_200d_in_currency: z.string().nullish(),
+  price_change_percentage_24h_in_currency: z.string().nullish(),
+  price_change_percentage_30d_in_currency: z.string().nullish(),
+  price_change_percentage_7d_in_currency: z.string().nullish(),
 });
 
 export const coinMarketsSchema = z.array(coinMarketSchema);
@@ -102,33 +99,40 @@ export const tickersSchema = z.object({
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      last: losslessNumber
+      last: z
+        .string()
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      volume: losslessNumber
+      volume: z
+        .string()
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      cost_to_move_up_usd: losslessNumber
+      cost_to_move_up_usd: z
+        .string()
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      cost_to_move_down_usd: losslessNumber
+      cost_to_move_down_usd: z
+        .string()
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
       converted_last: z
         .object({
-          btc: losslessNumber
+          btc: z
+            .string()
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
-          eth: losslessNumber
+          eth: z
+            .string()
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
-          usd: losslessNumber
+          usd: z
+            .string()
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
@@ -137,15 +141,18 @@ export const tickersSchema = z.object({
         .transform((v) => v ?? null)
         .nullable(),
       converted_volume: z.object({
-        btc: losslessNumber
+        btc: z
+          .string()
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
-        eth: losslessNumber
+        eth: z
+          .string()
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
-        usd: losslessNumber
+        usd: z
+          .string()
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
@@ -155,7 +162,8 @@ export const tickersSchema = z.object({
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      bid_ask_spread_percentage: losslessNumber
+      bid_ask_spread_percentage: z
+        .string()
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
@@ -210,7 +218,7 @@ export const tickersSchema = z.object({
 });
 
 export const marketChartSchema = z.object({
-  prices: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
-  market_caps: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
-  total_volumes: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
+  prices: z.array(z.tuple([z.string(), z.string().nullable()])),
+  market_caps: z.array(z.tuple([z.string(), z.string().nullable()])),
+  total_volumes: z.array(z.tuple([z.string(), z.string().nullable()])),
 });

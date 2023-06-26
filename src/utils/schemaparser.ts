@@ -1,7 +1,6 @@
 import { parse } from "lossless-json";
 import { Response } from "node-fetch";
 import { InvalidResponseFromCoingeckoError } from "../errors/InvalidResponseFromCoingeckoError.js";
-import { BigNumber } from "bignumber.js";
 
 export async function parseSchemaFromResponse<T>(
   schema: Zod.ZodTypeAny,
@@ -11,7 +10,7 @@ export async function parseSchemaFromResponse<T>(
     const jsonData = parse(
       await response.text(),
       undefined,
-      (value: string) => new BigNumber(value)
+      (value: string) => value
     );
 
     const data = await schema.parseAsync(jsonData).catch((err) => {

@@ -1,4 +1,3 @@
-import { BigNumber } from "bignumber.js";
 import {
   MarketChartSnapshot,
   MarketChartSnapshots,
@@ -19,10 +18,10 @@ export class MarketChartMapper {
   }
 
   static #snapshotMapper = (
-    snapshot: [BigNumber, BigNumber | null]
+    snapshot: [string, string | null]
   ): MarketChartSnapshot => {
     return {
-      date: new Date(snapshot[0].toNumber()),
+      date: new Date(snapshot[0]),
       value: snapshot[1],
     };
   };

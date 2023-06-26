@@ -1,5 +1,3 @@
-import { BigNumber } from "bignumber.js";
-
 export interface Market {
   name: string | null;
   identifier: string | null;
@@ -10,18 +8,18 @@ export type TickerProps = {
   base: string | null;
   target: string | null;
   market: Market | null;
-  last: BigNumber | null;
-  volume: BigNumber | null;
+  last: string | null;
+  volume: string | null;
   converted_last: {
-    [key: string]: BigNumber;
+    [key: string]: string;
   } | null;
   converted_volume: {
-    [key: string]: BigNumber;
+    [key: string]: string;
   } | null;
-  cost_to_move_up_usd: BigNumber | null;
-  cost_to_move_down_usd: BigNumber | null;
+  cost_to_move_up_usd: string | null;
+  cost_to_move_down_usd: string | null;
   trust_score: string | null;
-  bid_ask_spread_percentage: BigNumber | null;
+  bid_ask_spread_percentage: string | null;
   timestamp: Date | null;
   last_traded_at: Date | null;
   last_fetch_at: Date | null;
@@ -41,18 +39,18 @@ export class Ticker {
   base: string | null;
   target: string | null;
   market: Market | null;
-  last: BigNumber | null;
-  volume: BigNumber | null;
+  last: string | null;
+  volume: string | null;
   converted_last: {
-    [key: string]: BigNumber | null;
+    [key: string]: string | null;
   } | null;
   converted_volume: {
-    [key: string]: BigNumber | null;
+    [key: string]: string | null;
   } | null;
-  cost_to_move_up_usd: BigNumber | null;
-  cost_to_move_down_usd: BigNumber | null;
+  cost_to_move_up_usd: string | null;
+  cost_to_move_down_usd: string | null;
   trust_score: string | null;
-  bid_ask_spread_percentage: BigNumber | null;
+  bid_ask_spread_percentage: string | null;
   timestamp: Date | null;
   last_traded_at: Date | null;
   last_fetch_at: Date | null;

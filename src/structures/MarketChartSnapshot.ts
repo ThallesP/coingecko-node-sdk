@@ -1,7 +1,5 @@
-import { BigNumber } from "bignumber.js";
-
 export interface MarketChartSnapshot {
-  value: BigNumber | null;
+  value: string | null;
   date: Date;
 }
 
