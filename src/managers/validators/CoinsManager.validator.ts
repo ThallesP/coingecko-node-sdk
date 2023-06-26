@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LosslessNumber } from "lossless-json";
+import { BigNumber } from "bignumber.js";
 
 export const coinsSchema = z.array(
   z.object({
@@ -10,7 +10,7 @@ export const coinsSchema = z.array(
   })
 );
 
-const losslessNumber = z.instanceof(LosslessNumber);
+const losslessNumber = z.instanceof(BigNumber);
 
 export const coinMarketSchema = z.object({
   id: z.string(),
@@ -210,7 +210,7 @@ export const tickersSchema = z.object({
 });
 
 export const marketChartSchema = z.object({
-  prices: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
-  market_caps: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
-  total_volumes: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
+  prices: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
+  market_caps: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
+  total_volumes: z.array(z.tuple([losslessNumber, losslessNumber.nullable()])),
 });

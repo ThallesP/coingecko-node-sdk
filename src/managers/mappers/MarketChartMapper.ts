@@ -1,4 +1,4 @@
-import { LosslessNumber } from "lossless-json";
+import { BigNumber } from "bignumber.js";
 import {
   MarketChartSnapshot,
   MarketChartSnapshots,
@@ -19,10 +19,10 @@ export class MarketChartMapper {
   }
 
   static #snapshotMapper = (
-    snapshot: [number, LosslessNumber | null]
+    snapshot: [BigNumber, BigNumber | null]
   ): MarketChartSnapshot => {
     return {
-      date: new Date(snapshot[0]),
+      date: new Date(snapshot[0].toNumber()),
       value: snapshot[1],
     };
   };

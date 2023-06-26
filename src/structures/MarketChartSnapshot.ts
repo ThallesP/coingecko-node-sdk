@@ -1,7 +1,7 @@
-import { LosslessNumber } from "lossless-json";
+import { BigNumber } from "bignumber.js";
 
 export interface MarketChartSnapshot {
-  value: LosslessNumber | null;
+  value: BigNumber | null;
   date: Date;
 }
 
