@@ -1,13 +1,13 @@
-import { BigNumber } from "bignumber.js";
+import { LosslessNumber } from "lossless-json";
 
 export interface Roi {
-  times: number | null;
-  currency: string;
-  percentage: number | null;
+  times: LosslessNumber | null;
+  currency: string | null;
+  percentage: LosslessNumber | null;
 }
 
 export interface SparklineIn7d {
-  price: number[];
+  price: LosslessNumber[];
 }
 
 export type CoinMarketProps = {
@@ -15,36 +15,36 @@ export type CoinMarketProps = {
   symbol: string;
   name: string;
   image: string;
-  current_price: number | null;
-  market_cap: number | null;
-  market_cap_rank: number | null;
-  fully_diluted_valuation: BigNumber | null;
-  total_volume: number | null;
-  high_24h: number | null;
-  low_24h: number | null;
-  price_change_24h: number | null;
-  price_change_percentage_24h: number | null;
-  market_cap_change_24h: number | null;
-  market_cap_change_percentage_24h: number | null;
-  circulating_supply: BigNumber | null;
-  total_supply: BigNumber | null;
-  max_supply: BigNumber | null;
-  ath: number | null;
-  ath_change_percentage: number;
+  current_price: LosslessNumber | null;
+  market_cap: LosslessNumber | null;
+  market_cap_rank: LosslessNumber | null;
+  fully_diluted_valuation: LosslessNumber | null;
+  total_volume: LosslessNumber | null;
+  high_24h: LosslessNumber | null;
+  low_24h: LosslessNumber | null;
+  price_change_24h: LosslessNumber | null;
+  price_change_percentage_24h: LosslessNumber | null;
+  market_cap_change_24h: LosslessNumber | null;
+  market_cap_change_percentage_24h: LosslessNumber | null;
+  circulating_supply: LosslessNumber | null;
+  total_supply: LosslessNumber | null;
+  max_supply: LosslessNumber | null;
+  ath: LosslessNumber | null;
+  ath_change_percentage: LosslessNumber | null;
   ath_date: Date | null;
-  atl: number | null;
-  atl_change_percentage: BigNumber | null;
+  atl: LosslessNumber | null;
+  atl_change_percentage: LosslessNumber | null;
   atl_date: Date | null;
   roi: Roi | null;
   last_updated: Date | null;
   sparkline_in_7d: SparklineIn7d | null;
-  price_change_percentage_1h_in_currency: number | null;
-  price_change_percentage_24h_in_currency: number | null;
-  price_change_percentage_30d_in_currency: number | null;
-  price_change_percentage_7d_in_currency: number | null;
-  price_change_percentage_14d_in_currency: number | null;
-  price_change_percentage_200d_in_currency: number | null;
-  price_change_percentage_1y_in_currency: number | null;
+  price_change_percentage_1h_in_currency: LosslessNumber | null;
+  price_change_percentage_24h_in_currency: LosslessNumber | null;
+  price_change_percentage_30d_in_currency: LosslessNumber | null;
+  price_change_percentage_7d_in_currency: LosslessNumber | null;
+  price_change_percentage_14d_in_currency: LosslessNumber | null;
+  price_change_percentage_200d_in_currency: LosslessNumber | null;
+  price_change_percentage_1y_in_currency: LosslessNumber | null;
 };
 
 export class CoinMarket {
@@ -85,34 +85,34 @@ export class CoinMarket {
   symbol: string;
   name: string;
   image: string;
-  current_price: number | null;
-  market_cap: number | null;
-  market_cap_rank: number | null;
-  fully_diluted_valuation: BigNumber | null;
-  total_volume: number | null;
-  high_24h: number | null;
-  low_24h: number | null;
-  price_change_24h: number | null;
-  price_change_percentage_24h: number | null;
-  market_cap_change_24h: number | null;
-  market_cap_change_percentage_24h: number | null;
-  circulating_supply: BigNumber | null;
-  total_supply: BigNumber | null;
-  max_supply: BigNumber | null;
-  ath: number | null;
-  ath_change_percentage: number;
+  current_price: LosslessNumber | null;
+  market_cap: LosslessNumber | null;
+  market_cap_rank: LosslessNumber | null;
+  fully_diluted_valuation: LosslessNumber | null;
+  total_volume: LosslessNumber | null;
+  high_24h: LosslessNumber | null;
+  low_24h: LosslessNumber | null;
+  price_change_24h: LosslessNumber | null;
+  price_change_percentage_24h: LosslessNumber | null;
+  market_cap_change_24h: LosslessNumber | null;
+  market_cap_change_percentage_24h: LosslessNumber | null;
+  circulating_supply: LosslessNumber | null;
+  total_supply: LosslessNumber | null;
+  max_supply: LosslessNumber | null;
+  ath: LosslessNumber | null;
+  ath_change_percentage: LosslessNumber;
   ath_date: Date | null;
-  atl: number | null;
-  atl_change_percentage: BigNumber | null;
+  atl: LosslessNumber | null;
+  atl_change_percentage: LosslessNumber | null;
   atl_date: Date | null;
   roi: Roi | null;
   last_updated: Date | null;
   sparkline_in_7d: SparklineIn7d | null;
-  price_change_percentage_14d_in_currency: number | null;
-  price_change_percentage_1h_in_currency: number | null;
-  price_change_percentage_1y_in_currency: number | null;
-  price_change_percentage_200d_in_currency: number | null;
-  price_change_percentage_24h_in_currency: number | null;
-  price_change_percentage_30d_in_currency: number | null;
-  price_change_percentage_7d_in_currency: number | null;
+  price_change_percentage_14d_in_currency: LosslessNumber | null;
+  price_change_percentage_1h_in_currency: LosslessNumber | null;
+  price_change_percentage_1y_in_currency: LosslessNumber | null;
+  price_change_percentage_200d_in_currency: LosslessNumber | null;
+  price_change_percentage_24h_in_currency: LosslessNumber | null;
+  price_change_percentage_30d_in_currency: LosslessNumber | null;
+  price_change_percentage_7d_in_currency: LosslessNumber | null;
 }

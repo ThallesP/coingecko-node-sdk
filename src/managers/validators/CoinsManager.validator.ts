@@ -10,53 +10,53 @@ export const coinsSchema = z.array(
   })
 );
 
-const bigNumbers = z.instanceof(LosslessNumber).or(z.number()).nullable();
+const losslessNumber = z.instanceof(LosslessNumber);
 
 export const coinMarketSchema = z.object({
   id: z.string(),
   symbol: z.string(),
   name: z.string(),
   image: z.string(),
-  current_price: z.number().nullable(),
-  market_cap: z.number().nullable(),
-  market_cap_rank: z.number().nullable(),
-  fully_diluted_valuation: bigNumbers,
-  total_volume: z.number().nullable(),
-  high_24h: z.number().nullable(),
-  low_24h: z.number().nullable(),
-  price_change_24h: z.number().nullable(),
-  price_change_percentage_24h: z.number().nullable(),
-  market_cap_change_24h: z.number().nullable(),
-  market_cap_change_percentage_24h: z.number().nullable(),
-  circulating_supply: bigNumbers,
-  total_supply: bigNumbers,
-  max_supply: bigNumbers,
-  ath: z.number().nullable(),
-  ath_change_percentage: z.number(),
+  current_price: losslessNumber.nullable(),
+  market_cap: losslessNumber.nullable(),
+  market_cap_rank: losslessNumber.nullable(),
+  fully_diluted_valuation: losslessNumber.nullable(),
+  total_volume: losslessNumber.nullable(),
+  high_24h: losslessNumber.nullable(),
+  low_24h: losslessNumber.nullable(),
+  price_change_24h: losslessNumber.nullable(),
+  price_change_percentage_24h: losslessNumber.nullable(),
+  market_cap_change_24h: losslessNumber.nullable(),
+  market_cap_change_percentage_24h: losslessNumber.nullable(),
+  circulating_supply: losslessNumber.nullable(),
+  total_supply: losslessNumber.nullable(),
+  max_supply: losslessNumber.nullable(),
+  ath: losslessNumber.nullable(),
+  ath_change_percentage: losslessNumber.nullable(),
   ath_date: z.coerce.date().nullable(),
-  atl: z.number().nullable(),
-  atl_change_percentage: bigNumbers,
+  atl: losslessNumber.nullable(),
+  atl_change_percentage: losslessNumber.nullable(),
   atl_date: z.coerce.date().nullable(),
   roi: z
     .object({
-      times: z.number().nullable(),
-      currency: z.string(),
-      percentage: z.number().nullable(),
+      times: losslessNumber.nullable(),
+      currency: z.string().nullable(),
+      percentage: losslessNumber.nullable(),
     })
     .nullable(),
   last_updated: z.coerce.date().nullable(),
   sparkline_in_7d: z
     .object({
-      price: z.array(z.number()),
+      price: z.array(losslessNumber),
     })
     .nullish(),
-  price_change_percentage_14d_in_currency: z.number().nullish(),
-  price_change_percentage_1h_in_currency: z.number().nullish(),
-  price_change_percentage_1y_in_currency: z.number().nullish(),
-  price_change_percentage_200d_in_currency: z.number().nullish(),
-  price_change_percentage_24h_in_currency: z.number().nullish(),
-  price_change_percentage_30d_in_currency: z.number().nullish(),
-  price_change_percentage_7d_in_currency: z.number().nullish(),
+  price_change_percentage_14d_in_currency: losslessNumber.nullish(),
+  price_change_percentage_1h_in_currency: losslessNumber.nullish(),
+  price_change_percentage_1y_in_currency: losslessNumber.nullish(),
+  price_change_percentage_200d_in_currency: losslessNumber.nullish(),
+  price_change_percentage_24h_in_currency: losslessNumber.nullish(),
+  price_change_percentage_30d_in_currency: losslessNumber.nullish(),
+  price_change_percentage_7d_in_currency: losslessNumber.nullish(),
 });
 
 export const coinMarketsSchema = z.array(coinMarketSchema);
@@ -102,40 +102,33 @@ export const tickersSchema = z.object({
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      last: z
-        .number()
+      last: losslessNumber
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      volume: z
-        .number()
+      volume: losslessNumber
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      cost_to_move_up_usd: z
-        .number()
+      cost_to_move_up_usd: losslessNumber
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      cost_to_move_down_usd: z
-        .number()
+      cost_to_move_down_usd: losslessNumber
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
       converted_last: z
         .object({
-          btc: z
-            .number()
+          btc: losslessNumber
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
-          eth: z
-            .number()
+          eth: losslessNumber
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
-          usd: z
-            .number()
+          usd: losslessNumber
             .nullish()
             .transform((v) => v ?? null)
             .nullable(),
@@ -144,18 +137,15 @@ export const tickersSchema = z.object({
         .transform((v) => v ?? null)
         .nullable(),
       converted_volume: z.object({
-        btc: z
-          .number()
+        btc: losslessNumber
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
-        eth: z
-          .number()
+        eth: losslessNumber
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
-        usd: z
-          .number()
+        usd: losslessNumber
           .nullish()
           .transform((v) => v ?? null)
           .nullable(),
@@ -165,8 +155,7 @@ export const tickersSchema = z.object({
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
-      bid_ask_spread_percentage: z
-        .number()
+      bid_ask_spread_percentage: losslessNumber
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
@@ -221,7 +210,7 @@ export const tickersSchema = z.object({
 });
 
 export const marketChartSchema = z.object({
-  prices: z.array(z.tuple([z.number(), z.number().nullable()])),
-  market_caps: z.array(z.tuple([z.number(), z.number().nullable()])),
-  total_volumes: z.array(z.tuple([z.number(), z.number().nullable()])),
+  prices: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
+  market_caps: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
+  total_volumes: z.array(z.tuple([z.number(), losslessNumber.nullable()])),
 });

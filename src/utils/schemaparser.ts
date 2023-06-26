@@ -7,17 +7,7 @@ export async function parseSchemaFromResponse<T>(
   response: Response
 ): Promise<T> {
   try {
-    const jsonData = parse(
-      await response.text(),
-      undefined,
-      (value: string) => {
-        if (!isSafeNumber(value)) {
-          return new LosslessNumber(value);
-        }
-
-        return parseFloat(value);
-      }
-    );
+    const jsonData = parse(await response.text());
 
     const data = await schema.parseAsync(jsonData).catch((err) => {
       throw new InvalidResponseFromCoingeckoError(

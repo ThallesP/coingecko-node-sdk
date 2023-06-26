@@ -1,3 +1,5 @@
+import { LosslessNumber } from "lossless-json";
+
 export interface Market {
   name: string | null;
   identifier: string | null;
@@ -8,18 +10,18 @@ export type TickerProps = {
   base: string | null;
   target: string | null;
   market: Market | null;
-  last: number | null;
-  volume: number | null;
+  last: LosslessNumber | null;
+  volume: LosslessNumber | null;
   converted_last: {
-    [key: string]: number;
+    [key: string]: LosslessNumber;
   } | null;
   converted_volume: {
-    [key: string]: number;
+    [key: string]: LosslessNumber;
   } | null;
-  cost_to_move_up_usd: number | null;
-  cost_to_move_down_usd: number | null;
+  cost_to_move_up_usd: LosslessNumber | null;
+  cost_to_move_down_usd: LosslessNumber | null;
   trust_score: string | null;
-  bid_ask_spread_percentage: number | null;
+  bid_ask_spread_percentage: LosslessNumber | null;
   timestamp: Date | null;
   last_traded_at: Date | null;
   last_fetch_at: Date | null;
@@ -39,18 +41,18 @@ export class Ticker {
   base: string | null;
   target: string | null;
   market: Market | null;
-  last: number | null;
-  volume: number | null;
+  last: LosslessNumber | null;
+  volume: LosslessNumber | null;
   converted_last: {
-    [key: string]: number | null;
+    [key: string]: LosslessNumber | null;
   } | null;
   converted_volume: {
-    [key: string]: number | null;
+    [key: string]: LosslessNumber | null;
   } | null;
-  cost_to_move_up_usd: number | null;
-  cost_to_move_down_usd: number | null;
+  cost_to_move_up_usd: LosslessNumber | null;
+  cost_to_move_down_usd: LosslessNumber | null;
   trust_score: string | null;
-  bid_ask_spread_percentage: number | null;
+  bid_ask_spread_percentage: LosslessNumber | null;
   timestamp: Date | null;
   last_traded_at: Date | null;
   last_fetch_at: Date | null;

@@ -1,5 +1,7 @@
+import { LosslessNumber } from "lossless-json";
+
 export interface MarketChartSnapshot {
-  value: number | null;
+  value: LosslessNumber | null;
   date: Date;
 }
 
