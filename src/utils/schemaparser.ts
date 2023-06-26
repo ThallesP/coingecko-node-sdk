@@ -9,7 +9,7 @@ export async function parseSchemaFromResponse<T>(
 ): Promise<T> {
   try {
     const jsonData = parse(await response.text(), undefined, (value: string) =>
-      new BigNumber(value).toString()
+      new BigNumber(value).toFixed()
     );
 
     const data = await schema.parseAsync(jsonData).catch((err) => {
