@@ -59,6 +59,10 @@ describe("CoinsManager", () => {
     const coinMarkets = await coinsManager.markets({
       vs_currency: "usd",
       per_page: 250,
+      include: {
+        sparkline: true,
+        price_change_percentage: [],
+      },
     });
 
     expect(coinMarkets.length).toBeGreaterThan(1);

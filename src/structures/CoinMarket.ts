@@ -5,7 +5,7 @@ export interface Roi {
 }
 
 export interface SparklineIn7d {
-  price: string[];
+  price: number[];
 }
 
 export type CoinMarketProps = {

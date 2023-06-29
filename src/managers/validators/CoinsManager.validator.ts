@@ -46,6 +46,7 @@ export const coinMarketSchema = z.object({
     .object({
       price: z.array(z.string()),
     })
+    .transform((v) => ({ price: v.price.map(Number) }))
     .nullish(),
   price_change_percentage_14d_in_currency: z.string().nullish(),
   price_change_percentage_1h_in_currency: z.string().nullish(),
