@@ -2,6 +2,7 @@ export interface Market {
   name: string | null;
   identifier: string | null;
   has_trading_incentive: boolean | null;
+  logo?: string | null;
 }
 
 export type TickerProps = {
@@ -18,7 +19,7 @@ export type TickerProps = {
   } | null;
   cost_to_move_up_usd: string | null;
   cost_to_move_down_usd: string | null;
-  trust_score: string | null;
+  trust_score: "green" | "red" | "yellow" | "gray" | null;
   bid_ask_spread_percentage: string | null;
   timestamp: Date | null;
   last_traded_at: Date | null;
@@ -49,7 +50,7 @@ export class Ticker {
   } | null;
   cost_to_move_up_usd: string | null;
   cost_to_move_down_usd: string | null;
-  trust_score: string | null;
+  trust_score: "green" | "red" | "yellow" | "gray" | null;
   bid_ask_spread_percentage: string | null;
   timestamp: Date | null;
   last_traded_at: Date | null;

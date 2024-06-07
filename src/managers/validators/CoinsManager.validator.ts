@@ -159,7 +159,7 @@ export const tickersSchema = z.object({
           .nullable(),
       }),
       trust_score: z
-        .string()
+        .enum(["green", "yellow", "red", "gray"])
         .nullish()
         .transform((v) => v ?? null)
         .nullable(),
