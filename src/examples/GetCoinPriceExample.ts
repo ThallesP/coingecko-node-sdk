@@ -9,7 +9,7 @@ import { GeckoClient } from "./../clients/GeckoClient.js";
 		},
 	});
 
-	const price = await client.coins.getCoinPriceByTokenAddresses({
+	const price = await client.coins.price({
 		chain: "ethereum",
 		token_addresses: [
 			"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",

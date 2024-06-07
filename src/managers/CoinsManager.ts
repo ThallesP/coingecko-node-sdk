@@ -78,10 +78,7 @@ export class CoinsManager {
 		this.#request = requestManager;
 	}
 
-	async getCoinPriceByTokenAddresses({
-		token_addresses,
-		chain,
-	}: GetCoinPriceByTokenAddressesProps) {
+	async price({ token_addresses, chain }: GetCoinPriceByTokenAddressesProps) {
 		const params = new URLSearchParams();
 
 		params.append(
