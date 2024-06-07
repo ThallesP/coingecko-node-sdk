@@ -25,6 +25,7 @@
     "url": "https://github.com/thallesp/coingecko-node-sdk"
   },
   "devDependencies": {
+    "@types/big.js": "^6.2.2",
     "@types/json-bigint": "^1.0.1",
     "dotenv": "^16.0.3",
     "nock": "^13.3.1",
@@ -34,8 +35,8 @@
     "vitest": "^0.30.1"
   },
   "dependencies": {
-    "big.js": "^9.1.1",
+    "big.js": "^6.2.1",
     "lossless-json": "^2.0.8",
-    "zod": "^3.21.4"
+    "zod": "^3.23.8"
   }
 }

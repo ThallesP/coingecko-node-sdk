@@ -2,6 +2,7 @@ import { CoinNotFoundError } from "../errors/CoinNotFoundError.js";
 import { HttpError } from "../errors/HttpError.js";
 import { Coin } from "../structures/Coin.js";
 import { CoinMarket } from "../structures/CoinMarket.js";
+import { CoinPrice } from "../structures/CoinPrice.js";
 import { Ticker } from "../structures/Ticker.js";
 import { parseSchemaFromResponse } from "../utils/schemaparser.js";
 import { BaseCoin } from "./../structures/BaseCoin.js";
@@ -9,221 +10,260 @@ import { GeckoRequestManager } from "./GeckoRequestManager.js";
 import { CoinMarketMapper } from "./mappers/CoinMarketMapper.js";
 import { MarketChartMapper } from "./mappers/MarketChartMapper.js";
 import {
-  coinMarketsSchema,
-  coinsSchema,
-  marketChartSchema,
-  tickersSchema,
+	coinMarketsSchema,
+	coinsSchema,
+	marketChartSchema,
+	tickersSchema,
+	tokenPriceSchema,
 } from "./validators/CoinsManager.validator.js";
 
 export type CoinsManagerProps = {
-  requestManager: GeckoRequestManager;
+	requestManager: GeckoRequestManager;
 };
 export type Periods = "1h" | "24h" | "7d" | "14d" | "30d" | "200d" | "1y";
 
 export type ListCoinsProps = {
-  include?: {
-    platform?: boolean;
-  };
+	include?: {
+		platform?: boolean;
+	};
 };
 
 export type ListMarketsProps = {
-  vs_currency: string;
+	vs_currency: string;
 
-  include?: {
-    sparkline?: boolean;
-    price_change_percentage: Periods[];
-  };
-  page?: number;
-  per_page?: number;
+	include?: {
+		sparkline?: boolean;
+		price_change_percentage: Periods[];
+	};
+	page?: number;
+	per_page?: number;
 };
 
 export type GetTickersProps = {
-  coin_id: string;
-  include?: {
-    depth?: boolean;
-    include_exchange_logo?: boolean;
-  };
+	coin_id: string;
+	include?: {
+		depth?: boolean;
+		include_exchange_logo?: boolean;
+	};
 };
 
 export type GetCoinByIDProps = {
-  coin_id: string;
-  include?: {
-    sparkline?: boolean;
-    tickers?: boolean;
-    market_data?: boolean;
-    community_data?: boolean;
-    developer_data?: boolean;
-    localization?: boolean;
-  };
+	coin_id: string;
+	include?: {
+		sparkline?: boolean;
+		tickers?: boolean;
+		market_data?: boolean;
+		community_data?: boolean;
+		developer_data?: boolean;
+		localization?: boolean;
+	};
+};
+
+export type GetCoinPriceByTokenAddressesProps = {
+	token_addresses: string | string[];
+	chain: string;
 };
 
 export type GetCoinMarketChartProps = {
-  coin_id: string;
-  vs_currency: string;
-  days: string | number;
-  interval?: string;
+	coin_id: string;
+	vs_currency: string;
+	days: string | number;
+	interval?: string;
 };
 
 export class CoinsManager {
-  #request: GeckoRequestManager;
+	#request: GeckoRequestManager;
 
-  constructor({ requestManager }: CoinsManagerProps) {
-    this.#request = requestManager;
-  }
+	constructor({ requestManager }: CoinsManagerProps) {
+		this.#request = requestManager;
+	}
 
-  async coin(props: GetCoinByIDProps): Promise<Coin | null> {
-    const params = new URLSearchParams();
+	async getCoinPriceByTokenAddresses({
+		token_addresses,
+		chain,
+	}: GetCoinPriceByTokenAddressesProps) {
+		const params = new URLSearchParams();
 
-    if (props.include) {
-      const {
-        sparkline,
-        community_data,
-        developer_data,
-        localization,
-        market_data,
-        tickers,
-      } = props.include;
-      if (sparkline) params.append("sparkline", String(sparkline));
-      if (community_data)
-        params.append("community_data", String(community_data));
-      if (developer_data)
-        params.append("developer_data", String(developer_data));
-      if (localization) params.append("localization", String(localization));
-      if (market_data) params.append("market_data", String(market_data));
-      if (tickers) params.append("tickers", String(tickers));
-    }
+		params.append(
+			"contract_addresses",
+			typeof token_addresses === "string"
+				? token_addresses
+				: token_addresses.join(","),
+		);
+		params.append(
+			"vs_currencies",
+			"btc,eth,ltc,bch,bnb,eos,xrp,xlm,link,dot,yfi,usd,aed,ars,aud,bdt,bhd,bmd,brl,cad,chf,clp,cny,czk,dkk,eur,gbp,gel,hkd,huf,idr,ils,inr,jpy,krw,kwd,lkr,mmk,mxn,myr,ngn,nok,nzd,php,pkr,pln,rub,sar,sek,sgd,thb,try,twd,uah,vef,vnd,zar,xdr,xag,xau,bits,sats",
+		);
+		params.append("precision", "full");
 
-    const response = await this.#request.get(
-      `/coins/${props.coin_id}?` + params
-    );
+		const response = await this.#request.get(
+			`/simple/token_price/${chain}?` + params,
+		);
 
-    if (response.status === 404) return null;
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
 
-    if (!response.ok)
-      throw new HttpError(response.status, await response.text());
+		const data = await parseSchemaFromResponse<typeof tokenPriceSchema._type>(
+			tokenPriceSchema,
+			response,
+		);
 
-    return (await response.json()) as Coin;
-  }
+		return Object.keys(data).map((key) => data[key] as CoinPrice);
+	}
 
-  async list(props?: ListCoinsProps): Promise<BaseCoin[]> {
-    const params = new URLSearchParams();
-    if (props && props.include) {
-      const { platform } = props.include;
+	async coin(props: GetCoinByIDProps): Promise<Coin | null> {
+		const params = new URLSearchParams();
 
-      if (platform)
-        params.append("include_platform", String(props.include.platform));
-    }
+		if (props.include) {
+			const {
+				sparkline,
+				community_data,
+				developer_data,
+				localization,
+				market_data,
+				tickers,
+			} = props.include;
+			if (sparkline) params.append("sparkline", String(sparkline));
+			if (community_data)
+				params.append("community_data", String(community_data));
+			if (developer_data)
+				params.append("developer_data", String(developer_data));
+			if (localization) params.append("localization", String(localization));
+			if (market_data) params.append("market_data", String(market_data));
+			if (tickers) params.append("tickers", String(tickers));
+		}
 
-    const response = await this.#request.get("/coins/list?" + params);
+		const response = await this.#request.get(
+			`/coins/${props.coin_id}?` + params,
+		);
 
-    if (!response.ok)
-      throw new HttpError(response.status, await response.text());
+		if (response.status === 404) return null;
 
-    const data = await parseSchemaFromResponse<typeof coinsSchema._type>(
-      coinsSchema,
-      response
-    );
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
 
-    return data.map((coin) => new BaseCoin(coin));
-  }
+		return (await response.json()) as Coin;
+	}
 
-  async markets({
-    vs_currency,
-    include,
-    per_page = 100,
-    page = 1,
-  }: ListMarketsProps): Promise<CoinMarket[]> {
-    const params = new URLSearchParams();
-    params.append("vs_currency", vs_currency);
+	async list(props?: ListCoinsProps): Promise<BaseCoin[]> {
+		const params = new URLSearchParams();
+		if (props && props.include) {
+			const { platform } = props.include;
 
-    if (include) {
-      const { price_change_percentage, sparkline } = include;
+			if (platform)
+				params.append("include_platform", String(props.include.platform));
+		}
 
-      if (sparkline) params.append("sparkline", String(sparkline));
+		const response = await this.#request.get("/coins/list?" + params);
 
-      if (price_change_percentage)
-        params.append(
-          "price_change_percentage",
-          price_change_percentage.join(",")
-        );
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
 
-      params.append("per_page", String(per_page));
-      params.append("page", String(page));
-    }
+		const data = await parseSchemaFromResponse<typeof coinsSchema._type>(
+			coinsSchema,
+			response,
+		);
 
-    const response = await this.#request.get("/coins/markets?" + params);
+		return data.map((coin) => new BaseCoin(coin));
+	}
 
-    if (response.status == 404) throw new CoinNotFoundError(vs_currency);
+	async markets({
+		vs_currency,
+		include,
+		per_page = 100,
+		page = 1,
+	}: ListMarketsProps): Promise<CoinMarket[]> {
+		const params = new URLSearchParams();
+		params.append("vs_currency", vs_currency);
 
-    if (!response.ok)
-      throw new HttpError(response.status, await response.text());
+		if (include) {
+			const { price_change_percentage, sparkline } = include;
 
-    const data = await parseSchemaFromResponse<typeof coinMarketsSchema._type>(
-      coinMarketsSchema,
-      response
-    );
+			if (sparkline) params.append("sparkline", String(sparkline));
 
-    return data.map(CoinMarketMapper.toCoinMarket);
-  }
+			if (price_change_percentage)
+				params.append(
+					"price_change_percentage",
+					price_change_percentage.join(","),
+				);
 
-  async tickers({
-    coin_id,
-    include,
-  }: GetTickersProps): Promise<Ticker[] | null> {
-    const params = new URLSearchParams();
+			params.append("per_page", String(per_page));
+			params.append("page", String(page));
+		}
 
-    if (include) {
-      const { depth, include_exchange_logo } = include;
-      if (depth) params.append("depth", String(depth));
+		const response = await this.#request.get("/coins/markets?" + params);
 
-      if (include_exchange_logo)
-        params.append("include_exchange_logo", String(include_exchange_logo));
-    }
+		if (response.status == 404) throw new CoinNotFoundError(vs_currency);
 
-    const response = await this.#request.get(
-      `/coins/${coin_id}/tickers?` + params
-    );
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
 
-    if (response.status === 404) return null;
+		const data = await parseSchemaFromResponse<typeof coinMarketsSchema._type>(
+			coinMarketsSchema,
+			response,
+		);
 
-    if (!response.ok)
-      throw new HttpError(response.status, await response.text());
+		return data.map(CoinMarketMapper.toCoinMarket);
+	}
 
-    const data = await parseSchemaFromResponse<typeof tickersSchema._type>(
-      tickersSchema,
-      response
-    );
+	async tickers({
+		coin_id,
+		include,
+	}: GetTickersProps): Promise<Ticker[] | null> {
+		const params = new URLSearchParams();
 
-    return data.tickers;
-  }
+		if (include) {
+			const { depth, include_exchange_logo } = include;
+			if (depth) params.append("depth", String(depth));
 
-  async marketChart({
-    coin_id,
-    days,
-    vs_currency,
-    interval,
-  }: GetCoinMarketChartProps) {
-    const params = new URLSearchParams();
+			if (include_exchange_logo)
+				params.append("include_exchange_logo", String(include_exchange_logo));
+		}
 
-    params.append("coin_id", coin_id);
-    params.append("vs_currency", vs_currency);
-    params.append("days", String(days));
-    if (interval) params.append("interval", interval);
+		const response = await this.#request.get(
+			`/coins/${coin_id}/tickers?` + params,
+		);
 
-    const response = await this.#request.get(
-      `/coins/${coin_id}/market_chart?` + params
-    );
+		if (response.status === 404) return null;
 
-    if (response.status === 404) throw new CoinNotFoundError(coin_id);
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
 
-    if (!response.ok)
-      throw new HttpError(response.status, await response.text());
+		const data = await parseSchemaFromResponse<typeof tickersSchema._type>(
+			tickersSchema,
+			response,
+		);
 
-    const data = await parseSchemaFromResponse<typeof marketChartSchema._type>(
-      marketChartSchema,
-      response
-    );
+		return data.tickers;
+	}
 
-    return MarketChartMapper.toMarketChart(data);
-  }
+	async marketChart({
+		coin_id,
+		days,
+		vs_currency,
+		interval,
+	}: GetCoinMarketChartProps) {
+		const params = new URLSearchParams();
+
+		params.append("coin_id", coin_id);
+		params.append("vs_currency", vs_currency);
+		params.append("days", String(days));
+		if (interval) params.append("interval", interval);
+
+		const response = await this.#request.get(
+			`/coins/${coin_id}/market_chart?` + params,
+		);
+
+		if (response.status === 404) throw new CoinNotFoundError(coin_id);
+
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
+
+		const data = await parseSchemaFromResponse<typeof marketChartSchema._type>(
+			marketChartSchema,
+			response,
+		);
+
+		return MarketChartMapper.toMarketChart(data);
+	}
 }
