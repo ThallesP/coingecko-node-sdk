@@ -71,6 +71,12 @@ export type GetCoinMarketChartProps = {
 	interval?: string;
 };
 
+export type GetCoinHistoryProps = {
+	coin_id: string;
+	date: string; // Format: dd-mm-yyyy
+	localization?: boolean;
+};
+
 export class CoinsManager {
 	#request: GeckoRequestManager;
 
@@ -262,5 +268,27 @@ export class CoinsManager {
 		);
 
 		return MarketChartMapper.toMarketChart(data);
+	}
+
+	async history({
+		coin_id,
+		date,
+		localization = true,
+	}: GetCoinHistoryProps): Promise<Coin | null> {
+		const params = new URLSearchParams();
+
+		params.append("date", date);
+		params.append("localization", String(localization));
+
+		const response = await this.#request.get(
+			`/coins/${coin_id}/history?` + params,
+		);
+
+		if (response.status === 404) return null;
+
+		if (!response.ok)
+			throw new HttpError(response.status, await response.text());
+
+		return (await response.json()) as Coin;
 	}
 }
