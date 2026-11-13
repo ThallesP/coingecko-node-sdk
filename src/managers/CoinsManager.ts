@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { CoinNotFoundError } from "../errors/CoinNotFoundError.js";
 import { HttpError } from "../errors/HttpError.js";
 import { Coin } from "../structures/Coin.js";
@@ -73,7 +74,7 @@ export type GetCoinMarketChartProps = {
 
 export type GetCoinHistoryProps = {
 	coin_id: string;
-	date: string; // Format: dd-mm-yyyy
+	date: Date;
 	localization?: boolean;
 };
 
@@ -162,7 +163,7 @@ export class CoinsManager {
 		if (!response.ok)
 			throw new HttpError(response.status, await response.text());
 
-		const data = await parseSchemaFromResponse<typeof coinsSchema._type>(
+		const data = await parseSchemaFromResponse<z.infer<typeof coinsSchema>>(
 			coinsSchema,
 			response,
 		);
@@ -201,7 +202,7 @@ export class CoinsManager {
 		if (!response.ok)
 			throw new HttpError(response.status, await response.text());
 
-		const data = await parseSchemaFromResponse<typeof coinMarketsSchema._type>(
+		const data = await parseSchemaFromResponse<z.infer<typeof coinMarketsSchema>>(
 			coinMarketsSchema,
 			response,
 		);
@@ -232,7 +233,7 @@ export class CoinsManager {
 		if (!response.ok)
 			throw new HttpError(response.status, await response.text());
 
-		const data = await parseSchemaFromResponse<typeof tickersSchema._type>(
+		const data = await parseSchemaFromResponse<z.infer<typeof tickersSchema>>(
 			tickersSchema,
 			response,
 		);
@@ -262,7 +263,7 @@ export class CoinsManager {
 		if (!response.ok)
 			throw new HttpError(response.status, await response.text());
 
-		const data = await parseSchemaFromResponse<typeof marketChartSchema._type>(
+		const data = await parseSchemaFromResponse<z.infer<typeof marketChartSchema>>(
 			marketChartSchema,
 			response,
 		);
@@ -273,12 +274,16 @@ export class CoinsManager {
 	async history({
 		coin_id,
 		date,
-		localization = true,
+		localization,
 	}: GetCoinHistoryProps): Promise<Coin | null> {
 		const params = new URLSearchParams();
+		const timestamp = Math.floor(date.getTime() / 1e3);
 
-		params.append("date", date);
-		params.append("localization", String(localization));
+		params.append("date", String(Math.floor(date.getTime() / 1000)))
+
+		if (localization !== void 0) {
+			params.append("localization", String(localization));
+		}
 
 		const response = await this.#request.get(
 			`/coins/${coin_id}/history?` + params,
