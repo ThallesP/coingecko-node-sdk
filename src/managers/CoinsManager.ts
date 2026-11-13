@@ -74,7 +74,7 @@ export type GetCoinMarketChartProps = {
 
 export type GetCoinHistoryProps = {
 	coin_id: string;
-	date: string; // Format: dd-mm-yyyy
+	date: Date;
 	localization?: boolean;
 };
 
@@ -107,7 +107,7 @@ export class CoinsManager {
 		if (!response.ok)
 			throw new HttpError(response.status, await response.text());
 
-		const data = await parseSchemaFromResponse<z.infer<typeof tokenPriceSchema>>(
+		const data = await parseSchemaFromResponse<typeof tokenPriceSchema._type>(
 			tokenPriceSchema,
 			response,
 		);
@@ -274,12 +274,16 @@ export class CoinsManager {
 	async history({
 		coin_id,
 		date,
-		localization = true,
+		localization,
 	}: GetCoinHistoryProps): Promise<Coin | null> {
 		const params = new URLSearchParams();
+		const timestamp = Math.floor(date.getTime() / 1e3);
 
-		params.append("date", date);
-		params.append("localization", String(localization));
+		params.append("date", String(Math.floor(date.getTime() / 1000)))
+
+		if (localization !== void 0) {
+			params.append("localization", String(localization));
+		}
 
 		const response = await this.#request.get(
 			`/coins/${coin_id}/history?` + params,
