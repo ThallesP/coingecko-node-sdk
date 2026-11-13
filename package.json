@@ -28,6 +28,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "@types/big.js": "^7.0.0",
     "@types/json-bigint": "^1.0.4",
+    "@types/node": "^26.6.6",
     "dotenv": "^18.0.9",
     "nock": "^15.0.5",
     "node-fetch": "^3.3.2",
